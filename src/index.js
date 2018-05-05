@@ -1,8 +1,8 @@
-import auth from './oauth/auth';
+import {auth, getRequestToken, getAccessToken, query} from './oauth/auth';
 import {get, post} from './rest';
 import stream from './stream';
 
-export {auth};
+export {auth, getRequestToken, getAccessToken, query};
 
 export default function twitter(tokens) {
   return {
