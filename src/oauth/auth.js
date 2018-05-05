@@ -24,8 +24,10 @@ export function getRequestToken(tokens, callbackUrl, accessType) {
 
 export async function getAccessToken(
   {consumerKey, consumerSecret, requestToken, requestTokenSecret},
-  oauthVerifier,
+  verifyUrl,
 ) {
+  const verifyUrlParams = new URLSearchParams(verifyUrl.split('?')[1]);
+  const oauthVerifier = verifyUrlParams.get('oauth_verifier');
   const method = 'POST';
   const url = 'https://api.twitter.com/oauth/access_token';
   const response = await request(
