@@ -24,7 +24,7 @@ function encodeBody(body, type) {
   }
 }
 
-export default function request(
+export default async function request(
   tokens,
   url,
   {
@@ -38,7 +38,7 @@ export default function request(
 ) {
   const requestParams = {...method === 'POST' && type === contentType.FORM ? body : {}, ...params};
   const queryString = query(params);
-  return fetch(queryString ? `${url}?${queryString}` : url, {
+  return await fetch(queryString ? `${url}?${queryString}` : url, {
     method,
     headers: {
       Authorization: buildHeaderString(tokens, url, method, requestParams, extraParams),

@@ -5,7 +5,9 @@ import URLSearchParams from 'url-search-params';
 import request from './request';
 import {query} from '../util';
 
-function getRequestToken(tokens, callbackUrl, accessType) {
+export {query}
+
+export function getRequestToken(tokens, callbackUrl, accessType) {
   const method = 'POST';
   const url = 'https://api.twitter.com/oauth/request_token';
   const body = accessType ? {x_auth_access_type: accessType} : {};
@@ -20,28 +22,26 @@ function getRequestToken(tokens, callbackUrl, accessType) {
     });
 }
 
-function getAccessToken(
+export async function getAccessToken(
   {consumerKey, consumerSecret, requestToken, requestTokenSecret},
   oauthVerifier,
 ) {
   const method = 'POST';
   const url = 'https://api.twitter.com/oauth/access_token';
-  return request(
+  let responce = await request(
     {consumerKey, consumerSecret, oauthToken: requestToken, oauthTokenSecret: requestTokenSecret},
     url,
     {method},
     {oauth_verifier: oauthVerifier},
   )
-    .then(response => response.text())
-    .then((text) => {
-      const params = new URLSearchParams(text);
-      return {
-        accessToken: params.get('oauth_token'),
-        accessTokenSecret: params.get('oauth_token_secret'),
-        id: params.get('user_id'),
-        name: params.get('screen_name'),
-      };
-    });
+  let text = response.text();
+  const params = new URLSearchParams(text);
+  return {
+    accessToken: params.get('oauth_token'),
+    accessTokenSecret: params.get('oauth_token_secret'),
+    id: params.get('user_id'),
+    name: params.get('screen_name'),
+  };
 }
 
 const verifierDeferreds = new Map();
@@ -59,7 +59,7 @@ Linking.addEventListener('url', ({url}) => {
   }
 });
 
-export default async function auth(
+export async function auth(
   tokens,
   callbackUrl,
   {accessType, forSignIn = false, forceLogin = false, screenName = ''} = {},
