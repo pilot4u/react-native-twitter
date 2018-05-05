@@ -28,13 +28,13 @@ export async function getAccessToken(
 ) {
   const method = 'POST';
   const url = 'https://api.twitter.com/oauth/access_token';
-  let responce = await request(
+  const response = await request(
     {consumerKey, consumerSecret, oauthToken: requestToken, oauthTokenSecret: requestTokenSecret},
     url,
     {method},
     {oauth_verifier: oauthVerifier},
   )
-  let text = response.text();
+  const text = response.text();
   const params = new URLSearchParams(text);
   return {
     accessToken: params.get('oauth_token'),
