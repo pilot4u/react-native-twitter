@@ -17,7 +17,7 @@ export function getRequestToken(tokens, callbackUrl, accessType) {
   return request(tokens, url, {method, body}, {oauth_callback: callbackUrl})
     .then(response => response.text())
     .then((text) => {
-      const params = new 
+      const params = new URLSearchParams(text);
       (text);
       return {
         requestToken: params.get('oauth_token'),
