@@ -1,15 +1,14 @@
 import {Linking} from 'react-native';
 
+import {URLSearchParams } from 'whatwg-url';
+import {Buffer} from 'buffer';
+
 import request from './request';
 import {query} from '../util';
 
 export {query}
 
-const getParams = (query) => {
-  let queryObj = query.split('&').map(p => {tup = p.split("="); return{[tup[0]]:tup[1]};});
-  return {
-get:name=> queryObj[name]
-}};
+global.Buffer = Buffer;
 
 export function getRequestToken(tokens, callbackUrl, accessType) {
   const method = 'POST';
@@ -18,7 +17,8 @@ export function getRequestToken(tokens, callbackUrl, accessType) {
   return request(tokens, url, {method, body}, {oauth_callback: callbackUrl})
     .then(response => response.text())
     .then((text) => {
-      const params = new getParams(text);
+      const params = new 
+      (text);
       return {
         requestToken: params.get('oauth_token'),
         requestTokenSecret: params.get('oauth_token_secret'),
@@ -30,7 +30,7 @@ export async function getAccessToken(
   {consumerKey, consumerSecret, requestToken, requestTokenSecret},
   queryString,
 ) {
-  const queryStringParams = new getParams(queryString);
+  const queryStringParams = new URLSearchParams(queryString);
   const oauthVerifier = queryStringParams.get('oauth_verifier');
   const method = 'POST';
   const url = 'https://api.twitter.com/oauth/access_token';
@@ -41,7 +41,7 @@ export async function getAccessToken(
     {oauth_verifier: oauthVerifier},
   )
   const text = await response.text();
-  const params = new getParams(text);
+  const params = new URLSearchParams(text);
   return {
     accessToken: params.get('oauth_token'),
     accessTokenSecret: params.get('oauth_token_secret'),
@@ -53,7 +53,7 @@ export async function getAccessToken(
 const verifierDeferreds = new Map();
 
 Linking.addEventListener('url', ({url}) => {
-  const params = new getParams(url.split('?')[1]);
+  const params = new URLSearchParams(url.split('?')[1]);
   if (params.has('oauth_token') && verifierDeferreds.has(params.get('oauth_token'))) {
     const verifierDeferred = verifierDeferreds.get(params.get('oauth_token'));
     verifierDeferreds.delete(params.get('oauth_token'));
